@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        	<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--===============================================================================================-->	
+	<link rel="icon" type="image/png" href="images/icons/favicon.ico"/>
+<!--===============================================================================================-->
+	
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+<!--===============================================================================================-->
+
+	<link rel="stylesheet" type="text/css" href="css/util.css">
+	<link rel="stylesheet" type="text/css" href="css/main.css">
+        <style>
+            
+            table{
+               
+            }
+            td{
+                width: 100px;
+             
+                top: 300px;
+            }
+            #onlineUsers{
+                
+                
+                position: absolute;
+                width: 200px;
+                top: 170px;
+                right: 0px;
+                height: 500px;
+            }
+            img{
+                width: 50px;
+                height: 50px;
+                border-radius: 50%;
+            }
+            span{
+                font-size: 20px;
+                margin: 10px;
+                position: relative;
+                top: -10px;
+            }
+            .user{
+                
+            }
+            #form{
+                padding-bottom: 50px; 
+            }
+            #button{
+                 background-color: #4CAF50; /* Green */
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+            }
+         
+        </style>
+    </head>
+    <body onload="setInterval('startRquest()',1000)">
+        
+        <a href="Servlet1?key=1">LogOut</a>
+        <div id="form">
+            <table>
+                <tr>    
+                    <th>Message</th><th><textArea id="message" cols="50" rows="5"></textArea></th><th>
+                        <button onclick="" id="button">Send</button>
+</th><br><br>
+                    <tr>
+            </table>
+        </div>
+       
+        <div id="result">
+           
+            
+        </div>
+         <div id="onlineUsers">
+            
+           
+        </div>
+        <script>
+            function callback(response,statusTxt,xhr){
+                if(statusTxt=="success"){
+                    object=JSON.parse(response);
+                    messages=object.messages;
+                    users=object.users;
+                    onlineUser=object.onlineUsers;
+                    str="<table ><tr><th>Name</th><th>Message</th></tr>";
+                    for(i=0;i<messages.length;i++){
+                      str+="<tr>\n\
+                        <th>"+messages[i].name+"</th><th>";
+                     str+=messages[i].message+"</th>"
+                      str+="</tr>";
+                        
+                    }
+                        str+="</table>"
+                    $(result).html(str);
+                    str2="";
+                    
+                    for(i=0;i<users.length;i++){
+                        flag=false;
+                        for(j=0;j<onlineUser.length;j++){
+                            if((users[i].password)===(onlineUser[j].password)&&(users[i].email)===(onlineUser[j].email)){
+                                flag=true;
+                            }
+                            
+                        }
+                       if(flag===true){
+                     str2+="<div class='user'><img src='online.jpg'/><span>"+users[i].userName;
+                      str2+="<span></div>"  
+                    
+                }else{
+                    str2+="<div class='user'><img src='offline.jpg'/><span>"+users[i].userName;
+                      str2+="<span></div>" 
+                    
+                }
+                     $(onlineUsers).html(str2);
+                }
+            }}
+            
+            $(document).ready(function(){
+               $(button).click(function(){
+                 $.get("Servlet1?message="+$(message).val(),callback);
+               }) 
+                
+            })
+            function startRquest(){
+                $.post("Servlet1",null,callback);
+            }
+        </script>
+    </body>
+</html>
